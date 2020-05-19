@@ -9,14 +9,15 @@ import (
 	"github.com/byuoitav/connpool"
 )
 
-//const (
-//	_command    = 0x0100
-//	_terminator = 0xff
-//)
+const (
+	_command    = 0x01
+	_terminator = 0xff
+)
 
-//func byteN(b int, n int) byte {
-//	return byte((b >> (8 * n)) & 0xff)
-//}
+const (
+	_categoryCamera1 = 0x04
+	_categoryPanTilt = 0x06
+)
 
 type Camera struct {
 	address string

@@ -26,10 +26,10 @@ func (c *Camera) ZoomStop(ctx context.Context) error {
 	p[7] = 0x03
 	p[8] = 0x81
 	p[9] = 0x01
-	p[10] = 0x04
+	p[10] = _categoryCamera1
 	p[11] = _zoom
 	p[12] = _zoomStop
-	p[13] = 0xff
+	p[13] = _terminator
 
 	err := c.SendPayload(ctx, p)
 	if err != nil {
@@ -54,13 +54,13 @@ func (c *Camera) ZoomTele(ctx context.Context) error {
 	p[4] = 0x00
 	p[5] = 0x00
 	p[6] = 0x00
-	p[7] = 0x01
+	p[7] = _command
 	p[8] = 0x81
 	p[9] = 0x01
-	p[10] = 0x04
+	p[10] = _categoryCamera1
 	p[11] = _zoom
 	p[12] = _zoomTele
-	p[13] = 0xff
+	p[13] = _terminator
 
 	err = c.SendPayload(ctx, p)
 	if err != nil {
@@ -87,13 +87,13 @@ func (c *Camera) ZoomWide(ctx context.Context) error {
 	p[4] = 0x00
 	p[5] = 0x00
 	p[6] = 0x00
-	p[7] = 0x01
+	p[7] = _command
 	p[8] = 0x81
 	p[9] = 0x01
-	p[10] = 0x04
+	p[10] = _categoryCamera1
 	p[11] = _zoom
 	p[12] = _zoomWide
-	p[13] = 0xff
+	p[13] = _terminator
 
 	err = c.SendPayload(ctx, p)
 	if err != nil {
