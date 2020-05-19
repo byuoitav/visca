@@ -25,8 +25,6 @@ var (
 	ErrInvalidPanTiltDirection = errors.New("invalid pan/tilt direction")
 )
 
-// TODO check if it's out of range?
-
 func (c *Camera) TiltUp(ctx context.Context, speed byte) error {
 	return c.PanTiltDrive(ctx, PanDirectionStop, TiltDirectionUp, PanTiltSpeedMin, speed)
 }

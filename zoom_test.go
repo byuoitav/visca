@@ -24,22 +24,25 @@ func TestZoomWide(t *testing.T) {
 	}
 }
 
-func TestZoomWideTele(t *testing.T) {
+func TestZoomInOut(t *testing.T) {
 	cam := New("10.13.34.8:52381")
 
-	for i := 0; i < 10; i++ {
-		err := cam.ZoomTele(context.Background())
-		if err != nil {
-			t.Fatalf("failed to zoom tele: %s\n", err)
-		}
+	err := cam.ZoomTele(context.Background())
+	if err != nil {
+		t.Fatalf("failed to zoom tele: %s\n", err)
+	}
 
-		time.Sleep(time.Duration(i) * time.Second)
+	time.Sleep(1000 * time.Millisecond)
 
-		err = cam.ZoomWide(context.Background())
-		if err != nil {
-			t.Fatalf("failed to zoom wide: %s\n", err)
-		}
+	err = cam.ZoomWide(context.Background())
+	if err != nil {
+		t.Fatalf("failed to zoom tele: %s\n", err)
+	}
 
-		time.Sleep(time.Duration(10-i) * time.Second)
+	time.Sleep(1000 * time.Millisecond)
+
+	err = cam.ZoomStop(context.Background())
+	if err != nil {
+		t.Fatalf("failed to zoom tele: %s\n", err)
 	}
 }
