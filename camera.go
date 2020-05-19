@@ -11,12 +11,14 @@ import (
 
 const (
 	_command    = 0x01
+	_inquiry    = 0x09
 	_terminator = 0xff
 )
 
 const (
-	_categoryCamera1 = 0x04
-	_categoryPanTilt = 0x06
+	_categoryInterface = 0x00
+	_categoryCamera1   = 0x04
+	_categoryPanTilter = 0x06
 )
 
 type Camera struct {
