@@ -46,12 +46,12 @@ func New(addr string, opts ...Option) *Camera {
 	return cam
 }
 
-func (c *Camera) sendPayload(ctx context.Context, p payload) error {
-	var resp []byte
+func (c *Camera) sendPayload(ctx context.Context, p payload) (payload, error) {
+	var resp payload
 
 	bytes, err := p.MarshalBinary()
 	if err != nil {
-		return err
+		return resp, err
 	}
 
 	err = c.pool.Do(ctx, func(conn connpool.Conn) error {
@@ -72,17 +72,22 @@ func (c *Camera) sendPayload(ctx context.Context, p payload) error {
 			return fmt.Errorf("unable to write payload: wrote %d/%d bytes", n, len(bytes))
 		}
 
-		resp, err = conn.ReadUntil(0xff, deadline)
+		data, err := conn.ReadUntil(_terminator, deadline)
 		if err != nil {
 			return fmt.Errorf("unable to read response: %w", err)
 		}
 
-		c.debugf("Got response: %# x", resp)
+		c.debugf("Got response: %# x", data)
+
+		if err := resp.UnmarshalBinary(data); err != nil {
+			return fmt.Errorf("unable to parse response: %w", err)
+		}
+
 		return nil
 	})
 	if err != nil {
-		return err
+		return resp, err
 	}
 
-	return nil
+	return resp, nil
 }

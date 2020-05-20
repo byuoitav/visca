@@ -68,8 +68,13 @@ func (c *Camera) PanTiltDrive(ctx context.Context, panDir, tiltDir, panSpeed, ti
 		},
 	}
 
-	if err := c.sendPayload(ctx, payload); err != nil {
+	resp, err := c.sendPayload(ctx, payload)
+	if err != nil {
 		return err
+	}
+
+	if !resp.IsAck() {
+		return resp.Error()
 	}
 
 	return nil

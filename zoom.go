@@ -40,8 +40,13 @@ func (c *Camera) zoom(ctx context.Context, speedDir byte) error {
 		},
 	}
 
-	if err := c.sendPayload(ctx, payload); err != nil {
+	resp, err := c.sendPayload(ctx, payload)
+	if err != nil {
 		return err
+	}
+
+	if !resp.IsAck() {
+		return resp.Error()
 	}
 
 	return nil
