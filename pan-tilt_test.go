@@ -8,7 +8,7 @@ import (
 )
 
 func TestDriveCircle(t *testing.T) {
-	cam := New("10.13.34.8:52381")
+	cam := New("10.13.34.8:52381", WithLogger(testLogger{t}))
 
 	err := cam.TiltUp(context.Background(), 0x0e)
 	if err != nil {

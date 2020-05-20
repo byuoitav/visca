@@ -55,7 +55,7 @@ func (c *Camera) sendPayload(ctx context.Context, p payload) error {
 	}
 
 	err = c.pool.Do(ctx, func(conn connpool.Conn) error {
-		c.debugf("Sending payload: %# x", p)
+		c.debugf("Sending payload: %# x", bytes)
 
 		deadline, ok := ctx.Deadline()
 		if !ok {

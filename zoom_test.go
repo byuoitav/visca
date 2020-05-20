@@ -7,7 +7,7 @@ import (
 )
 
 func TestZoomInOut(t *testing.T) {
-	cam := New("10.13.34.8:52381")
+	cam := New("10.13.34.8:52381", WithLogger(testLogger{t}))
 
 	err := cam.ZoomTele(context.Background())
 	if err != nil {
