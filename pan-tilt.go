@@ -6,8 +6,6 @@ import (
 )
 
 const (
-	_commandPanTiltDrive = 0x01
-
 	TiltDirectionUp   = 0x01
 	TiltDirectionDown = 0x02
 	TiltDirectionStop = 0x03
@@ -57,28 +55,20 @@ func (c *Camera) PanTiltDrive(ctx context.Context, panDir, tiltDir, panSpeed, ti
 		return ErrInvalidPanTiltDirection
 	}
 
-	p := make([]byte, 17)
+	payload := payload{
+		Type:         _payloadTypeCommand,
+		IsInquiry:    false,
+		CategoryCode: _categoryCodePanTilter,
+		Command:      _commandPanTiltDrive,
+		Args: []byte{
+			panSpeed,
+			tiltSpeed,
+			panDir,
+			tiltDir,
+		},
+	}
 
-	p[0] = 0x01
-	p[1] = 0x00
-	p[2] = 0x00
-	p[3] = 0x09
-	p[4] = 0x00
-	p[5] = 0x00
-	p[6] = 0x00
-	p[7] = 0x01
-	p[8] = 0x81
-	p[9] = _command
-	p[10] = _categoryPanTilter
-	p[11] = _commandPanTiltDrive
-	p[12] = panSpeed
-	p[13] = tiltSpeed
-	p[14] = panDir
-	p[15] = tiltDir
-	p[16] = _terminator
-
-	err := c.SendPayload(ctx, p)
-	if err != nil {
+	if err := c.sendPayload(ctx, payload); err != nil {
 		return err
 	}
 

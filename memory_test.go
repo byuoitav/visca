@@ -9,7 +9,7 @@ import (
 func TestMemoryRecall(t *testing.T) {
 	cam := New("10.13.34.8:52381")
 
-	for i := 0; i < 6; i++ {
+	for i := 0; i < 3; i++ {
 		t.Logf("Memory recall %v\n", i)
 
 		err := cam.MemoryRecall(context.Background(), byte(i))

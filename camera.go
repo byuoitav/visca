@@ -9,18 +9,6 @@ import (
 	"github.com/byuoitav/connpool"
 )
 
-const (
-	_command    = 0x01
-	_inquiry    = 0x09
-	_terminator = 0xff
-)
-
-const (
-	_categoryInterface = 0x00
-	_categoryCamera1   = 0x04
-	_categoryPanTilter = 0x06
-)
-
 type Camera struct {
 	address string
 	pool    *connpool.Pool
@@ -58,10 +46,15 @@ func New(addr string, opts ...Option) *Camera {
 	return cam
 }
 
-func (c *Camera) SendPayload(ctx context.Context, p []byte) error {
+func (c *Camera) sendPayload(ctx context.Context, p payload) error {
 	var resp []byte
 
-	err := c.pool.Do(ctx, func(conn connpool.Conn) error {
+	bytes, err := p.MarshalBinary()
+	if err != nil {
+		return err
+	}
+
+	err = c.pool.Do(ctx, func(conn connpool.Conn) error {
 		c.debugf("Sending payload: %# x", p)
 
 		deadline, ok := ctx.Deadline()
@@ -71,12 +64,12 @@ func (c *Camera) SendPayload(ctx context.Context, p []byte) error {
 
 		conn.SetWriteDeadline(deadline)
 
-		n, err := conn.Write(p)
+		n, err := conn.Write(bytes)
 		switch {
 		case err != nil:
 			return fmt.Errorf("unable to write payload: %w", err)
-		case n != len(p):
-			return fmt.Errorf("unable to write payload: wrote %d/%d bytes", n, len(p))
+		case n != len(bytes):
+			return fmt.Errorf("unable to write payload: wrote %d/%d bytes", n, len(bytes))
 		}
 
 		resp, err = conn.ReadUntil(0xff, deadline)
