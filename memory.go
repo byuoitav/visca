@@ -13,6 +13,30 @@ const (
 	_memoryChannelMax = 0x7f
 )
 
+func (c *Camera) MemorySet(ctx context.Context, channel byte) error {
+	payload := payload{
+		Type:         _payloadTypeCommand,
+		IsInquiry:    false,
+		CategoryCode: _categoryCodeCamera1,
+		Command:      _commandMemory,
+		Args: []byte{
+			_funcMemorySet,
+			channel,
+		},
+	}
+
+	resp, err := c.sendPayload(ctx, payload)
+	if err != nil {
+		return err
+	}
+
+	if !resp.IsAck() {
+		return resp.Error()
+	}
+
+	return nil
+}
+
 func (c *Camera) MemoryRecall(ctx context.Context, channel byte) error {
 	payload := payload{
 		Type:         _payloadTypeCommand,
