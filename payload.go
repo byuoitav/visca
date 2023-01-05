@@ -100,9 +100,10 @@ func (p *payload) MarshalBinary() ([]byte, error) {
 }
 
 func (p *payload) UnmarshalBinary(data []byte) error {
-	if len(data) < _minPayloadLength {
-		return fmt.Errorf("data in bad format: %# x", data)
-	}
+	// Commenting out these lines due to having a similar health check 11 lines down
+	//if len(data) < _minPayloadLength {
+	//	return fmt.Errorf("data in bad format: %# x", data)
+	//}
 
 	// bytes 0 and 1 are the type
 	p.Type[0] = data[0]
@@ -113,7 +114,12 @@ func (p *payload) UnmarshalBinary(data []byte) error {
 
 	// bytes 4-7 are still a mystery...
 
-	if len(data) < _minPayloadLength+int(length) {
+	// Logic that checks that the data received the full visca package
+	// This keeps fractured visca packets from getting processed
+	// We found that AVer cameras do no send back the proper length bit but
+	// other manufacturers do like BirdDog.  (AVer sends back a 1 for lenth)
+	// This fix will still allow AVer to function while also allowing BirdDog to work
+	if len(data) < _headerLength+int(length) {
 		return fmt.Errorf("data in bad format: %# x", data)
 	}
 
