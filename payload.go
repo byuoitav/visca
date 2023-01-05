@@ -156,7 +156,15 @@ func (p *payload) UnmarshalBinary(data []byte) error {
 }
 
 func (p *payload) IsAck() bool {
-	return p.Type == _payloadTypeReply && len(p.Args) == 1 && p.Args[0] == 0x90
+	if p.Type == _payloadTypeReply {
+		if len(p.Args) == 1 && p.Args[0] == 0x90 {
+			return true
+		}
+		if len(p.Args) >= 2 && p.Args[0] == 0x90 && (p.Args[1] == 0x41 || p.Args[1] == 0x51) {
+			return true
+		}
+	}
+	return false
 }
 
 func (p *payload) Error() error {
